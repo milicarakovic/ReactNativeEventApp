@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 import { Button, Card, Input, Switch } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { GetUser, TokenContext, UpdateUser } from '../../../service/api';
+import { GetUser, UpdateUser } from '../../../service/api';
 import { User } from './../../../models/User';
-import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
 function MyProfile() {
   const [switchOn, setSwitchOn] = useState<boolean>(false);
@@ -16,7 +16,7 @@ function MyProfile() {
   const [email, setEmail] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [image, setImage] = useState<any>(null);
-  const { token, setToken } = useContext(TokenContext);
+  // const { token, setToken } = useContext(TokenContext);
 
   const uploadPhoto = async () => {
     let permisiion = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -48,18 +48,7 @@ function MyProfile() {
     setSwitchOn(!switchOn);
   };
 
-  async function getToken() {
-    await AsyncStorage.getItem('token').then((item) => {
-      if (item) {
-        setToken(item);
-        return token;
-      }
-    });
-    return token;
-  }
-
   useEffect(() => {
-    let tok = getToken();
     getData();
   }, []);
 

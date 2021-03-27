@@ -8,17 +8,6 @@ import { UserLogIn } from '../models/UserLogIn';
 
 export const baseUrl = 'http://192.168.1.4:3000';
 
-export type IToken = {
-  token: string;
-  setToken: (value: string) => void;
-};
-const TokenDefault: IToken = {
-  token: '',
-  setToken: () => null,
-};
-
-export const TokenContext = createContext<IToken>(TokenDefault);
-
 export type IValid = {
   value: boolean;
   setValue: (value: boolean) => void;

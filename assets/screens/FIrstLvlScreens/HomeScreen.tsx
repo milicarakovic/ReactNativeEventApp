@@ -1,14 +1,18 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import { Button, Icon, Text } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+interface Props {
+  setToken: (value: string | null) => void;
+}
+function HomeScreen(props: Props) {
+  const navigation = useNavigation();
 
-function HomeScreen({ navigation }) {
-  // const { token } = useContext(TokenContext);
-
-  const handleLogOut = () => {
-    AsyncStorage.removeItem('token');
+  const handleLogOut = async () => {
+    await AsyncStorage.removeItem('token');
+    props.setToken('');
     navigation.navigate('LogIn');
   };
 

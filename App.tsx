@@ -1,49 +1,53 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreateAccount from './assets/screens/FIrstLvlScreens/CreateAccount';
 import HomeScreen from './assets/screens/FIrstLvlScreens/HomeScreen';
 import LogIn from './assets/screens/LogIn';
+import MapScreen from './assets/screens/SecondLvlScreens/MapScreen';
 import ProfileScreen from './assets/screens/SecondLvlScreens/ProfileScreen';
 import SearchScreen from './assets/screens/SecondLvlScreens/SearchScreen';
-import { TokenContext } from './service/api';
-import AsyncStorage from '@react-native-community/async-storage';
-import { Alert } from 'react-native';
-import MapScreen from './assets/screens/SecondLvlScreens/MapScreen';
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  // const [token, setToken] = useState<string>('');
-  const { token, setToken } = useContext(TokenContext);
+  const [token, setToken] = useState(null);
 
-  // function readItem() {
-  //   AsyncStorage.getItem('token').then((itemValue) => setToken(itemValue));
-  // }
-  // useEffect(() => {
-  //   Alert.alert('App' + token);
-  // }, []);
+  async function readItem() {
+    let tok = await AsyncStorage.getItem('token');
+    if (tok && tok !== '') {
+      setToken(tok);
+    }
+  }
+  useEffect(() => {
+    readItem();
+  }, []);
 
   return (
-    <TokenContext.Provider value={{ token, setToken }}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="LogIn"
-          screenOptions={{ headerShown: false }}
-        >
-          {/* {token !== '' ? Alert.alert(token) : Alert.alert(token)} */}
-          <Stack.Screen name="LogIn" component={LogIn} />
-          <Stack.Screen
-            name="HomeScreen"
-            component={HomeScreen}
-            options={{ gestureEnabled: false }}
-          />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Search" component={SearchScreen} />
-          <Stack.Screen name="Map" component={MapScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </TokenContext.Provider>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName={token && token !== '' ? 'HomeScreen' : 'LogIn'}
+        screenOptions={{ headerShown: false }}
+      >
+        {token && token !== '' ? (
+          <>
+            <Stack.Screen name="HomeScreen" options={{ gestureEnabled: false }}>
+              {() => <HomeScreen setToken={(value) => setToken(value)} />}
+            </Stack.Screen>
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Search" component={SearchScreen} />
+            <Stack.Screen name="Map" component={MapScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="LogIn">
+              {() => <LogIn setToken={(value) => setToken(value)} />}
+            </Stack.Screen>
+            <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
