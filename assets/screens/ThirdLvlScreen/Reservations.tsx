@@ -8,10 +8,10 @@ import { Reservation } from '../../../models/Reservation';
 import {
   DeleteReservation,
   GetAllEvents,
-  GetAllReservations
+  GetAllReservations,
 } from '../../../service/api';
 
-function Reservations() {
+function Reservations({ navigation }) {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
@@ -65,6 +65,8 @@ function Reservations() {
             borderRadius: 10,
             borderWidth: 2,
             borderColor: '#005691',
+            width: '90%',
+            height: '60%',
           }}
         >
           <View
@@ -92,7 +94,13 @@ function Reservations() {
                   {moreInfoObject.location[0].city},{' '}
                   {moreInfoObject.location[0].district},{' '}
                 </Text>
-                <Text style={[styles.location, { marginBottom: 10 }]}>
+                <Text
+                  style={[styles.location, { marginBottom: 10, color: 'blue' }]}
+                  onPress={() => {
+                    setVisible(false);
+                    navigation.navigate('Map');
+                  }}
+                >
                   {moreInfoObject.location[0].place}
                 </Text>
                 <Text style={[styles.date, { marginBottom: 10 }]}>

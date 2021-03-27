@@ -7,6 +7,8 @@ type Location = {
   city: string;
   district: string;
   place: string;
+  longitude: Number;
+  latitude: Number
 };
 
 export class Event {
@@ -15,7 +17,7 @@ export class Event {
   description: string;
   date: Date;
   location: Location;
-  type: number;
+  // type: number;
   photo: string;
   contact: Contact;
   available: Number;
@@ -26,7 +28,7 @@ export class Event {
     description: string,
     date: Date,
     location: Location,
-    type: number,
+    // type: number,
     photo: string,
     contact: Contact,
     available: Number
@@ -36,7 +38,7 @@ export class Event {
     this.description = description;
     this.date = date;
     this.location = location;
-    this.type = type;
+    // this.type = type;
     this.photo = photo;
     this.contact = contact;
     this.available = available;

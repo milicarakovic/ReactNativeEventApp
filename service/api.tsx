@@ -6,7 +6,7 @@ import { Reservation } from '../models/Reservation';
 import { User } from '../models/User';
 import { UserLogIn } from '../models/UserLogIn';
 
-export const baseUrl = 'http://192.168.1.239:3000';
+export const baseUrl = 'http://192.168.1.4:3000';
 
 export type IToken = {
   token: string;
@@ -40,8 +40,10 @@ export async function GetAllEvents(): Promise<Event[]> {
       }),
     });
     var events = await res.json();
+    // console.log(events);
   } catch (err) {
     console.log(err);
+    events = null;
   }
   return events;
 }
@@ -103,9 +105,9 @@ export async function GetUser(): Promise<User> {
   return user;
 }
 
-export async function LogInUser(email: string, pass: string): Promise<boolean> {
+export async function LogInUser(email: string, pass: string): Promise<string> {
   let user = new UserLogIn(email, pass);
-  let isOk: boolean;
+  let isOk: string;
   await fetch(baseUrl + '/user/login', {
     method: 'POST',
     body: JSON.stringify(user),
@@ -117,12 +119,9 @@ export async function LogInUser(email: string, pass: string): Promise<boolean> {
   }).then(async (data) => {
     if (data.status == 200) {
       await AsyncStorage.setItem('token', data.headers.get('auth-token'));
-      isOk = true;
-      // return data.headers.get('auth-token');
+      isOk = data.headers.get('auth-token');
     } else {
-      // AsyncStorage.setItem('token', 'k');
-      isOk = false;
-      // return 'k';
+      isOk = '';
     }
   });
   return isOk;
@@ -133,9 +132,9 @@ export async function CreateUser(user: User): Promise<string | null> {
   await fetch(baseUrl + `/user/register`, {
     method: 'POST',
     body: JSON.stringify(user),
-    headers: {
+    headers: new Headers({
       'Content-Type': 'application/json',
-    },
+    }),
   })
     .then((data) => {
       return data.text();

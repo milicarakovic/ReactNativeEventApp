@@ -1,14 +1,17 @@
-import { Button, Icon, Text } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Button, Icon, Text } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 function HomeScreen({ navigation }) {
+  // const { token } = useContext(TokenContext);
+
   const handleLogOut = () => {
     AsyncStorage.removeItem('token');
     navigation.navigate('LogIn');
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <Button
@@ -29,12 +32,26 @@ function HomeScreen({ navigation }) {
         bordered
         rounded
         block
+        warning
+        style={styles.button}
+        iconLeft
+      >
+        <Icon name="search" style={{ color: 'orange' }} />
+        <Text style={{ color: 'orange' }}>Pretraga</Text>
+      </Button>
+
+      <Button
+        onPress={() => navigation.navigate('Map')}
+        large
+        bordered
+        rounded
+        block
         success
         style={styles.button}
         iconLeft
       >
-        <Icon name="search" style={{ color: 'green' }} />
-        <Text style={{ color: 'green' }}>Pretraga</Text>
+        <Icon name="map" style={{ color: 'green' }} />
+        <Text style={{ color: 'green' }}>Otvori mapu</Text>
       </Button>
 
       <Button

@@ -16,15 +16,10 @@ interface Props {
   setName: (value: string) => void;
   setSurname: (value: string) => void;
   setPhone: (value: string) => void;
-  setCity: (value: string) => void;
+  // setCity: (value: string) => void;
 }
 
-function validateAll(
-  name: String,
-  surname: String,
-  phone: String,
-  city: String
-) {
+function validateAll(name: String, surname: String, phone: String) {
   let errorMsg: String = '';
 
   if (name.length < 2) {
@@ -40,9 +35,6 @@ function validateAll(
   if (/^\d+$/.test(phone.valueOf()) == false) {
     errorMsg = errorMsg + ' Broj telefona ne sme sadrzati slova.\n';
   }
-  if (city === '') {
-    errorMsg = errorMsg + ' Niste odabrali grad.\n';
-  }
 
   return errorMsg;
 }
@@ -51,8 +43,6 @@ function SignUpPersonal(props: Props) {
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [city, setCity] = useState<string>('beograd');
-  // const cities = ['Beograd', 'Novi Sad'];
   const { setValue } = useValidInformation();
 
   useEffect(() => {
@@ -60,13 +50,12 @@ function SignUpPersonal(props: Props) {
   }, []);
 
   const checkData = () => {
-    let validationMsg = validateAll(name, surname, phone, city);
+    let validationMsg = validateAll(name, surname, phone);
 
     if (validationMsg === '') {
       props.setName(name);
       props.setPhone(phone);
       props.setSurname(surname);
-      props.setCity(city);
       setValue(true);
     } else {
       Alert.alert(validationMsg.valueOf());
@@ -92,23 +81,6 @@ function SignUpPersonal(props: Props) {
           onChangeText={(text) => setSurname(text)}
           style={styles.inputText}
         />
-      </View>
-      <View style={styles.groupedElements}>
-        <Text style={styles.text}>Izaberite grad:</Text>
-        <Picker
-          selectedValue={city}
-          style={{
-            height: 50,
-            width: 250,
-            borderBottomWidth: 2,
-            borderColor: '#8D89CA',
-          }}
-          // style={styles.inputText}
-          onValueChange={(itemValue, itemIndex) => setCity(itemValue)}
-        >
-          <Picker.Item label="Beograd" value="beograd" />
-          <Picker.Item label="Nis" value="nis" />
-        </Picker>
       </View>
       <View style={styles.groupedElements}>
         <Text style={styles.text}>Unesite broj telefona:</Text>

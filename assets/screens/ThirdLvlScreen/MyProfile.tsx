@@ -6,6 +6,7 @@ import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { GetUser, TokenContext, UpdateUser } from '../../../service/api';
 import { User } from './../../../models/User';
+import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
 function MyProfile() {
   const [switchOn, setSwitchOn] = useState<boolean>(false);
@@ -17,7 +18,7 @@ function MyProfile() {
   const [image, setImage] = useState<any>(null);
   const { token, setToken } = useContext(TokenContext);
 
-  const handleChoosePhoto = async () => {
+  const uploadPhoto = async () => {
     let permisiion = await ImagePicker.requestCameraRollPermissionsAsync();
 
     if (permisiion.granted == false) {
@@ -25,28 +26,22 @@ function MyProfile() {
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync();
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+    });
+
     if (result.cancelled) {
       return;
     }
+    const { uri } = result as ImageInfo;
 
-    // ImagePicker saves the taken photo to disk and returns a local URI to it
-    let localUri = result.uri;
-    setImage({ localUri: localUri });
+    const img = {
+      uri: uri,
+      type: 'image',
+      name: uri.substr(uri.lastIndexOf('/') + 1),
+    };
 
-    let filename = localUri.split('/').pop();
-    console.log('Filename: ', filename);
-
-    // Infer the type of the image
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
-
-    // Upload the image using the fetch and FormData APIs
-    let formData = new FormData();
-    // Assume "photo" is the name of the form field the server expects
-    formData.append('photo', { uri: localUri, name: filename, type });
-
-    // console.log(formData);
+    setImage(img);
   };
 
   const onToggleSwitch = () => {
@@ -66,7 +61,6 @@ function MyProfile() {
   useEffect(() => {
     let tok = getToken();
     getData();
-    console.log('Image', image);
   }, []);
 
   const getData = async () => {
@@ -80,6 +74,7 @@ function MyProfile() {
       res.password,
       res.image
     );
+
     setName(user.name);
     setSurname(user.surname);
     setEmail(user.email);
@@ -113,12 +108,8 @@ function MyProfile() {
           trackColor={{ true: '#005691', false: '#E8F1F5' }}
         />
         <View style={styles.profileImage}>
-          {image !== null ? (
-            // <Image source={{ uri: image.localUri }} style={styles.image} />
-            <Image
-              source={require('../FIrstLvlScreens/signUpScreens/me.png')}
-              style={styles.image}
-            />
+          {image !== null && image !== undefined ? (
+            <Image source={{ uri: image.uri }} style={styles.image} />
           ) : (
             <Image
               source={require('../FIrstLvlScreens/signUpScreens/me.png')}
@@ -134,7 +125,7 @@ function MyProfile() {
               ? { backgroundColor: '#005691' }
               : { backgroundColor: 'grey' },
           ]}
-          onPress={handleChoosePhoto}
+          onPress={uploadPhoto}
           disabled={!switchOn}
         >
           <Text style={{ color: '#FAFAFA', justifyContent: 'center' }}>

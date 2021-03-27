@@ -16,7 +16,6 @@ function CreateAccount({ navigation }) {
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [city, setCity] = useState<string>('');
   const [image, setImage] = useState<any>(null);
 
   let user: User;
@@ -35,7 +34,6 @@ function CreateAccount({ navigation }) {
       setName={(text) => setName(text)}
       setSurname={(text) => setSurname(text)}
       setPhone={(text) => setPhone(text)}
-      setCity={(text) => setCity(text)}
     />,
     <SignUpSubmit setImage={(image) => setImage(image)} />,
   ];

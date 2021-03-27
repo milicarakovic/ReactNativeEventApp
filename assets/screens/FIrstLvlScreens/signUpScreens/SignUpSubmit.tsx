@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useValidInformation } from '../../../../service/api';
+import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
 interface Props {
   setImage: (value: any) => void;
@@ -18,7 +19,7 @@ function SignUpSubmit(props: Props) {
   const [image, setImage] = useState<any>(null);
   const { value, setValue } = useValidInformation();
 
-  const handleChoosePhoto = async () => {
+  const uploadPhoto = async () => {
     let permisiion = await ImagePicker.requestCameraRollPermissionsAsync();
 
     if (permisiion.granted == false) {
@@ -26,36 +27,40 @@ function SignUpSubmit(props: Props) {
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync();
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+    });
+
     if (result.cancelled) {
       return;
     }
+    const { uri } = result as ImageInfo;
 
-    // ImagePicker saves the taken photo to disk and returns a local URI to it
-    let localUri = result.uri;
-    setImage({ localUri: localUri });
-    props.setImage({ localUri: localUri });
+    const img = {
+      uri: uri,
+      type: 'image',
+      name: uri.substr(uri.lastIndexOf('/') + 1),
+    };
+    setImage(img);
+    props.setImage(img);
   };
 
   useEffect(() => {
     setValue(false);
   }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.headline}>Ostao je jos jedan korak...</Text>
       <View style={styles.profileImage}>
         {image !== null ? (
-          <Image source={{ uri: image.localUri }} style={styles.image} />
+          <Image source={{ uri: image.uri }} style={styles.image} />
         ) : (
           <Image source={require('./me.png')} style={styles.image} />
         )}
       </View>
 
-      <Button
-        //style={styles.buttonUpload}
-        title="Upload"
-        onPress={handleChoosePhoto}
-      />
+      <Button title="Upload" onPress={uploadPhoto} />
     </SafeAreaView>
   );
 }

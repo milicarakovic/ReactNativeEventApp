@@ -15,13 +15,12 @@ import NumericInput from 'react-native-numeric-input';
 import { Event } from '../../../models/Event';
 import { AddNewReservation, GetAllEvents } from '../../../service/api';
 
-function SearchScreen() {
+function SearchScreen({ navigation }) {
   const [searchText, setSearchText] = useState<string>('');
   const [events, setEvents] = useState<Event[]>([]);
   const [moreInfoObject, setMoreInfoObject] = useState<Event | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [number, setNumber] = useState<number>(1);
-
   const getData = async () => {
     const res = await GetAllEvents();
     setEvents(res);
@@ -75,6 +74,8 @@ function SearchScreen() {
             borderRadius: 10,
             borderWidth: 2,
             borderColor: '#005691',
+            width: '90%',
+            height: '80%',
           }}
         >
           <View
@@ -105,7 +106,13 @@ function SearchScreen() {
                   {moreInfoObject.location[0].city},{' '}
                   {moreInfoObject.location[0].district},{' '}
                 </Text>
-                <Text style={[styles.location, { marginBottom: 10 }]}>
+                <Text
+                  style={[styles.location, { marginBottom: 10, color: 'blue' }]}
+                  onPress={() => {
+                    setVisible(false);
+                    navigation.navigate('Map');
+                  }}
+                >
                   {moreInfoObject.location[0].place}
                 </Text>
                 <Text style={[styles.date, { marginBottom: 10 }]}>
@@ -215,9 +222,7 @@ function SearchScreen() {
                 <Text style={styles.date}>
                   Datum: {Moment(item!.date).format('DD.MM.YYYY.')}
                 </Text>
-                <Text style={styles.location}>
-                  {item.location[0].city}, {item.location[0].district}
-                </Text>
+                <Text style={styles.location}>{item.location[0].place}</Text>
               </View>
             </View>
             <View style={styles.buttons}>
@@ -228,7 +233,12 @@ function SearchScreen() {
                   toggleOverlay();
                 }}
               >
-                <Text style={{ color: '#FAFAFA', justifyContent: 'center' }}>
+                <Text
+                  style={{
+                    color: '#FAFAFA',
+                    justifyContent: 'center',
+                  }}
+                >
                   Vise
                 </Text>
               </Button>
@@ -241,7 +251,6 @@ function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  overlay: {},
   container: {
     height: 200,
     flexDirection: 'row',
@@ -288,14 +297,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#005691',
     alignContent: 'center',
     justifyContent: 'center',
-    width: 200,
+    width: '100%',
   },
   buttonReservation: {
     flexDirection: 'row',
     backgroundColor: '#005691',
     alignContent: 'center',
     justifyContent: 'center',
-    width: 100,
+    width: '90%',
+    marginTop: '3%',
   },
 });
 

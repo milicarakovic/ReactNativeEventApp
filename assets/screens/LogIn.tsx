@@ -1,26 +1,21 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import { Form, Input, Item } from 'native-base';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, Button, SafeAreaView, StyleSheet, Text } from 'react-native';
-import { LogInUser } from '../../service/api';
-
-export const baseUrl = 'http://192.168.1.220:3000';
+import { LogInUser, TokenContext } from '../../service/api';
 
 function LogIn({ navigation }) {
-  const [email, setEmail] = useState<string>('milos@gmail.com');
-  const [pass, setPass] = useState<string>('milosmilos');
+  const [email, setEmail] = useState<string>('milica@gmail.com');
+  const [pass, setPass] = useState<string>('asdfghjkl');
+  const { setToken } = useContext(TokenContext);
 
   const handleLogIn = async () => {
-    const isOk: boolean = await LogInUser(email, pass);
-    if (isOk !== false) {
+    const isOk: string = await LogInUser(email, pass);
+    if (isOk !== '') {
+      setToken(isOk);
       navigation.navigate('HomeScreen');
     } else
       Alert.alert('Neuspesna prijava', 'Proverite email adresu i lozinku.');
   };
-
-  useEffect(() => {
-    AsyncStorage.removeItem('token');
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
