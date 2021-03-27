@@ -4,8 +4,8 @@ import { Alert, Button, SafeAreaView, StyleSheet, Text } from 'react-native';
 import { LogInUser, TokenContext } from '../../service/api';
 
 function LogIn({ navigation }) {
-  const [email, setEmail] = useState<string>('milica@gmail.com');
-  const [pass, setPass] = useState<string>('asdfghjkl');
+  const [email, setEmail] = useState<string>('');
+  const [pass, setPass] = useState<string>('');
   const { setToken } = useContext(TokenContext);
 
   const handleLogIn = async () => {
