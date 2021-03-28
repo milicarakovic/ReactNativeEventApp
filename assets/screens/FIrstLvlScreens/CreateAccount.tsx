@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, SafeAreaView, StyleSheet } from 'react-native';
 import Stepper from 'react-native-stepper-ui';
@@ -7,7 +8,9 @@ import SignUpAccount from './signUpScreens/SignUpAccount';
 import SignUpPersonal from './signUpScreens/SignUpPersonal';
 import SignUpSubmit from './signUpScreens/SignUpSubmit';
 
-function CreateAccount({ navigation }) {
+function CreateAccount() {
+  const navigation = useNavigation();
+
   let [step, setStep] = useState<number>(0);
 
   let [value, setValue] = useState<boolean>(false);

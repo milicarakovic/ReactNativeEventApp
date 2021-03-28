@@ -6,7 +6,7 @@ import { Reservation } from '../models/Reservation';
 import { User } from '../models/User';
 import { UserLogIn } from '../models/UserLogIn';
 
-export const baseUrl = 'http://192.168.1.4:3000';
+export const baseUrl = 'http://192.168.1.239:3000';
 
 export type IValid = {
   value: boolean;
@@ -97,6 +97,7 @@ export async function GetUser(): Promise<User> {
 export async function LogInUser(email: string, pass: string): Promise<string> {
   let user = new UserLogIn(email, pass);
   let isOk: string;
+
   await fetch(baseUrl + '/user/login', {
     method: 'POST',
     body: JSON.stringify(user),
@@ -111,6 +112,7 @@ export async function LogInUser(email: string, pass: string): Promise<string> {
       isOk = data.headers.get('auth-token');
     } else {
       isOk = '';
+      console.log('Data', data);
     }
   });
   return isOk;
@@ -118,19 +120,23 @@ export async function LogInUser(email: string, pass: string): Promise<string> {
 
 export async function CreateUser(user: User): Promise<string | null> {
   let finalResponse: string | null;
-  await fetch(baseUrl + `/user/register`, {
-    method: 'POST',
-    body: JSON.stringify(user),
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
-  })
-    .then((data) => {
-      return data.text();
+  try {
+    await fetch(baseUrl + `/user/register`, {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
     })
-    .then((fin) => {
-      finalResponse = fin;
-    });
+      .then((data) => {
+        return data.text();
+      })
+      .then((fin) => {
+        finalResponse = fin;
+      });
+  } catch (err) {
+    finalResponse = 'Proverite svoju internet konekciju.';
+  }
 
   return finalResponse;
 }

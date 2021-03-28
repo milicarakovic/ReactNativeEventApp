@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import { Form, Input, Item } from 'native-base';
 import React, { useState } from 'react';
 import { Alert, Button, SafeAreaView, StyleSheet, Text } from 'react-native';
@@ -7,7 +8,9 @@ import { LogInUser } from '../../service/api';
 interface Props {
   setToken: (value: string | null) => void;
 }
-function LogIn(props: Props, { navigation }) {
+function LogIn(props: Props) {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState<string>('milica@gmail.com');
   const [pass, setPass] = useState<string>('asdfghjkl');
 
